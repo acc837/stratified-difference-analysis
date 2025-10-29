@@ -40,7 +40,7 @@
 
 ### 1. 克隆或下载项目文件
 确保包含以下文件：
-- `2_stratification.py` - 主程序文件
+- `stratification.py` - 主程序文件
 - `GENIE3.py` - 调控网络算法
 - `requirements.txt` - 依赖包列表
 
