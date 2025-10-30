@@ -1,32 +1,46 @@
-# 基因表达分析工作流 (Gene Expression Analysis Workflow)
+# Gene Expression Analysis Workflow
 
-一个基于Streamlit的交互式基因表达分析平台，集成了基因分层、差异表达分析和调控网络构建的完整工作流。
+An interactive gene expression analysis platform based on Streamlit, integrating complete workflow of gene stratification, differential expression analysis, and regulatory network construction.
 
-## 功能特性
+## Research Team Information
 
-### 核心分析模块
-- **基因表达分层** - 基于表达量自动划分高、中、低表达基因
-- **差异表达分析** - 使用pyDESeq2进行专业级差异分析
-- **调控网络构建** - 基于GENIE3算法推断基因调控关系
-- **枢纽基因识别** - 自动发现全局关键调控基因
-- **特定基因分析** - 深入研究任意基因的上游调控和下游靶标
+### Affiliated Institutions
+1. **Department of Otolaryngology, Head and Neck Surgery, Beijing Tongren Hospital, Capital Medical University, Beijing, China**
+2. **Department of Biochemistry and Molecular Biology, Capital Medical University, Beijing, China**
 
-### 可视化与输出
-- 交互式基因分层分布图
-- 差异表达指标分布可视化
-- 调控网络边信息导出
-- 多格式报告下载(CSV, TXT, PNG)
+### Team Members
+- **Developer**: Tian Ye
+- **Project Leaders**: Lu Kong, Xiaohong Chen
+- **Project members**: Guoliang Yang, Xudong Wang, Tingyao Ma, JiaXin Chen, Fang Nan, Qian Chen
 
-## 环境要求
+### Research Background
+This tool was developed based on the practical needs in our research on molecular mechanisms of otolaryngology-head and neck surgery diseases, aiming to provide an efficient and accurate gene expression analysis platform for researchers in related fields.
 
-### 系统要求
+## Features
+
+### Core Analysis Modules
+- **Gene Expression Stratification** - Automatically classify genes into high, medium, and low expression layers based on expression levels
+- **Differential Expression Analysis** - Professional-level differential analysis using pyDESeq2
+- **Regulatory Network Construction** - Infer gene regulatory relationships based on GENIE3 algorithm
+- **Hub Gene Identification** - Automatically discover global key regulatory genes
+- **Specific Gene Analysis** - In-depth study of upstream regulation and downstream targets of specific gene
+
+### Visualization & Output
+- Interactive gene stratification distribution plots
+- Differential expression indicator distribution visualization
+- Regulatory network edge information export
+- Multi-format report downloads (CSV, TXT, PNG)
+
+## Environment Requirements
+
+### System Requirements
 - Python 3.8+
 - Windows/Linux/macOS
-- 至少8GB内存（推荐16GB+）
-- 支持UTF-8编码的环境
+- Minimum 8GB RAM (recommended 16GB+)
+- UTF-8 encoding supported environment
 
-### 依赖包
-详见 `requirements.txt`，主要依赖包括：
+### Dependencies
+See `requirements.txt` for details, main dependencies include:
 - streamlit==1.28.0
 - pandas==1.5.3
 - numpy==1.24.3
@@ -36,21 +50,21 @@
 - matplotlib==3.7.2
 - seaborn==0.12.2
 
-## 安装步骤
+## Installation Steps
 
-### 1. 克隆或下载项目文件
-确保包含以下文件：
-- `stratification.py` - 主程序文件
-- `GENIE3.py` - 调控网络算法
-- `requirements.txt` - 依赖包列表
+### 1. Clone or Download Project Files
+Ensure the following files are included:
+- `stratification.py` - Main program file
+- `GENIE3.py` - Regulatory network algorithm
+- `requirements.txt` - Dependency package list
 
-### 2. 创建Python环境（推荐）
+### 2. Create Python Environment (Recommended)
 ```bash
-# 创建conda环境
-conda create -n gene_analysis python=3.8
+# Create conda environment
+conda create -n gene_analysis python=3.10
 conda activate gene_analysis
 
-# 或创建venv环境
+# Or create venv environment
 python -m venv gene_analysis
 source gene_analysis/bin/activate  # Linux/macOS
 gene_analysis\Scripts\activate    # Windows
