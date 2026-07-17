@@ -1,70 +1,67 @@
-# Gene Expression Analysis Workflow
+Target-gene stratified DESeq2 + GENIE3
+This is a corrected implementation inspired by the workflow style of acc837/stratified-difference-analysis.
 
-An interactive gene expression analysis platform based on Streamlit, integrating complete workflow of gene stratification, differential expression analysis, and regulatory network construction.
+Intended workflow
+Upload a normalized expression matrix, such as TPM or FPKM.
+Upload the matching raw integer count matrix.
+Specify target gene A.
+Rank samples by normalized expression of A.
+Define A-high and A-low samples, defaulting to the upper and lower 25%.
+Select those samples in the raw count matrix and run PyDESeq2: A-high versus A-low.
+Select significant DEGs using padj and |log2FC| thresholds.
+Build a GENIE3-style multigene network using normalized expression of A + significant genes.
+Select a significant gene B and extract both A → B and B → A weights.
+Why the network is multigene
+Do not fit GENIE3 using only A and B. With only one predictor for each target, feature importance has no meaningful competition and the resulting weights are not informative. This app first builds a network containing A, B, and other significant genes, then extracts the A–B pair.
 
-## Research Team Information
+Input format
+Both CSV files must have genes in rows and samples in columns. The first column contains gene IDs.
 
-### Affiliated Institutions
-1. **Department of Otolaryngology, Head and Neck Surgery, Beijing Tongren Hospital, Capital Medical University, Beijing, China**
-2. **Department of Biochemistry and Molecular Biology, Capital Medical University, Beijing, China**
+Gene,S1,S2,S3,...
+GENE1,12.3,8.1,9.4,...
+GENE2,0.0,2.5,1.1,...
+The normalized matrix may contain TPM, FPKM, or already log-transformed values.
+The raw-count matrix must contain non-negative integers.
+Sample IDs must match between files.
+Duplicate normalized-expression gene IDs are averaged.
+Duplicate raw-count gene IDs are summed.
+Installation
+Python 3.10–3.12 is recommended.
 
-### Team Members
-- **Developer**: Tian Ye
-- **Project Leaders**: Lu Kong, Xiaohong Chen
-- **Project members**: Guoliang Yang, Xudong Wang, Tingyao Ma, JiaXin Chen, Fang Nan, Qian Chen
+python -m venv gene_network_env
 
-### Research Background
-This tool was developed based on the practical needs in our research on molecular mechanisms of otolaryngology-head and neck surgery diseases, aiming to provide an efficient and accurate gene expression analysis platform for researchers in related fields.
+# Windows PowerShell
+gene_network_env\Scripts\Activate.ps1
 
-## Features
+# Linux/macOS
+source gene_network_env/bin/activate
 
-### Core Analysis Modules
-- **Gene Expression Stratification** - Automatically classify genes into high, medium, and low expression layers based on expression levels
-- **Differential Expression Analysis** - Professional-level differential analysis using pyDESeq2
-- **Regulatory Network Construction** - Infer gene regulatory relationships based on GENIE3 algorithm
-- **Hub Gene Identification** - Automatically discover global key regulatory genes
-- **Specific Gene Analysis** - In-depth study of upstream regulation and downstream targets of specific gene
+pip install -r requirements.txt
+streamlit run app.py
+Important methodological choices
+DESeq2 input
+Only raw integer counts are passed to PyDESeq2. TPM/FPKM values are never used for differential-expression modeling.
 
-### Visualization & Output
-- Interactive gene stratification distribution plots
-- Differential expression indicator distribution visualization
-- Regulatory network edge information export
-- Multi-format report downloads (CSV, TXT, PNG)
+GENIE3 input
+GENIE3 uses the normalized expression matrix. For unlogged TPM/FPKM, the default is log2(x + 1). Disable that option when the uploaded matrix is already log-transformed.
 
-## Environment Requirements
+Samples used for GENIE3
+The default reproduces the requested workflow and uses only the A-high/A-low samples. The app also provides an all shared samples sensitivity mode, which retains continuous variation and helps assess circularity caused by discovering DEGs and estimating network edges in the same extreme samples.
 
-### System Requirements
-- Python 3.8+
-- Windows/Linux/macOS
-- Minimum 8GB RAM (recommended 16GB+)
-- UTF-8 encoding supported environment
+Interpretation
+A GENIE3 edge means that one gene's expression has predictive importance for another target gene within a tree-ensemble model. It does not prove:
 
-### Dependencies
-See `requirements.txt` for details, main dependencies include:
-- streamlit==1.28.0
-- pandas==1.5.3
-- numpy==1.24.3
-- scikit-learn==1.3.0
-- pydeseq2==0.4.3
-- networkx==2.8.8
-- matplotlib==3.7.2
-- seaborn==0.12.2
+direct molecular regulation;
+causal direction;
+transcription-factor binding;
+activation versus repression.
+The app reports Spearman correlation separately as an association/sign diagnostic. Experimental or independent-cohort validation is still required.
 
-## Installation Steps
-
-### 1. Clone or Download Project Files
-Ensure the following files are included:
-- `stratification.py` - Main program file
-- `GENIE3.py` - Regulatory network algorithm
-- `requirements.txt` - Dependency package list
-
-### 2. Create Python Environment (Recommended)
-```bash
-# Create conda environment
-conda create -n gene_analysis python=3.10
-conda activate gene_analysis
-
-# Or create venv environment
-python -m venv gene_analysis
-source gene_analysis/bin/activate  # Linux/macOS
-gene_analysis\Scripts\activate    # Windows
+Main outputs
+sample stratification table;
+full PyDESeq2 result table;
+significant DEG list;
+complete GENIE3 edge list;
+GENIE3 weighted adjacency matrix;
+A→B and B→A edge weights and ranks;
+top predicted incoming and outgoing edges for A.
