@@ -91,7 +91,7 @@ pip install streamlit pandas numpy scipy scikit-learn pydeseq2 matplotlib networ
 
 ### 4. Launch web app
 ```bash
-streamlit run app.py
+streamlit run main.py
 ```
 
 ---
@@ -139,7 +139,7 @@ It does **not** directly prove:
 ## 🗂 Project Structure
 ```
 .
-├── app.py              # Streamlit web UI & full pipeline controller
+├── main.py              # Streamlit web UI & full pipeline controller
 ├── analysis_core.py    # Core analysis functions (stratification, DESeq2, self-implemented GENIE3)
 ├── plotting.py         # All visualization functions
 └── README.md           # Project documentation
