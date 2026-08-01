@@ -298,6 +298,7 @@ def choose_network_genes(
     *,
     max_genes: int = 100,
     forced_partner: str | None = None,
+    extra_regulators: Sequence[str] | None = None,
 ) -> list[str]:
     """Select target A plus significant genes available in normalized expression."""
     target = resolve_gene_name(target_gene, normalized.index)
@@ -322,6 +323,18 @@ def choose_network_genes(
     chosen: list[str] = [target]
     if partner is not None:
         chosen.append(partner)
+        
+    extra_regulators = extra_regulators or []
+    
+    for gene in extra_regulators:
+        try:
+            resolved = resolve_gene_name(gene, normalized.index)
+        except ValueError:
+            continue
+
+        if resolved not in chosen:
+            chosen.append(resolved)
+            
     for gene in available:
         if gene not in chosen:
             chosen.append(gene)
