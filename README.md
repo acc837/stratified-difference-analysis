@@ -24,10 +24,10 @@ This web application performs a complete stratified transcriptomic analysis pipe
 2. Upload the matched **raw integer count matrix** for differential analysis.
 3. Define a **target gene A** for sample stratification.
 4. Rank all samples by the normalized expression level of target gene A.
-5. Group samples into **A-high** and **A-low** subgroups (default top/bottom 25%).
+5. Group samples into **A-high** and **A-low** subgroups (The default setting uses the top and bottom 25% of samples, while the stratification proportion should be adjusted according to the cohort size and the expression distribution of target gene A).
 6. Run **PyDESeq2** differential analysis: `A-high vs A-low`.
 7. Filter statistically significant DEGs by `padj` and `|log2FC|` thresholds.
-8. Construct a **multigene GENIE3 regulatory network** using target gene A + significant DEGs.
+8. Construct a multigene GENIE3 regulatory network using target gene A and significant DEGs, with optional inclusion of expressed known transcription factors and signaling regulators related to the pathway of interest.
 9. Select a partner gene B and extract **bidirectional regulatory weights** (`A→B` and `B→A`).
 
 ---
@@ -37,7 +37,7 @@ This web application performs a complete stratified transcriptomic analysis pipe
 
 A pairwise A/B-only network produces meaningless feature importance, because there is no predictive competition between features. Without multigene context, regulatory weights cannot represent true biological predictability.
 
-This pipeline builds a **context-rich network** (A + significant DEGs) and then extracts the A–B regulatory relationship, ensuring all weights are statistically informative.
+This pipeline builds a **context-rich multigene network** comprising target gene A and significant DEGs. Depending on the biological question and dataset, expressed known transcription factors and pathway-related signaling regulators may also be included as candidate genes. The A–B regulatory relationship is then extracted from the resulting multigene network, allowing each edge weight to be evaluated within a broader predictive context.
 
 ---
 
@@ -97,6 +97,9 @@ streamlit run main.py
 ---
 
 ## 🧭 Key Methodological Choices
+### Target-Gene Stratification
+- The default setting defines the top 25% of samples as A-high and the bottom 25% as A-low
+- The grouping proportion should be adjusted according to sample size and the expression distribution of target gene A
 ### Differential Analysis (DESeq2)
 - Only **raw integer counts** are used for DE modeling
 - Normalized TPM/FPKM data are never used for statistics
@@ -105,6 +108,7 @@ streamlit run main.py
 - Network inference uses **normalized expression matrix**
 - Auto `log2(x+1)` transformation for unlogged TPM/FPKM
 - Turn off transform if input data are already log-normalized
+- Candidate genes include target gene A and significant DEGs; expressed known transcription factors and pathway-related signaling regulators may be additionally included according to the biological context
 
 ### Sample Modes for Network Training
 - **Default mode**: Only A-high / A-low extreme samples (strict stratified workflow)
