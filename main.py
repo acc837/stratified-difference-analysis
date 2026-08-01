@@ -106,7 +106,11 @@ if norm_only or count_only:
 
 st.sidebar.header("Stratification and DESeq2")
 target_gene_input = st.sidebar.text_input("Target gene A", value="")
-fraction = st.sidebar.slider("High/low fraction per group", 0.10, 0.40, 0.25, 0.05)
+fraction = st.sidebar.slider("High/low fraction per group", 0.10, 0.40, 0.25, 0.05, help=(
+        "The default is the top and bottom 25%. "
+        "Adjust the proportion according to cohort size and "
+        "the expression distribution of target gene A."),
+    )
 group_method_label = st.sidebar.selectbox(
     "Grouping method",
     ["Exact rank groups", "Quantile thresholds"],
@@ -243,6 +247,21 @@ with c3:
     n_trees = st.number_input("Number of trees per target", 50, 5000, 1000, 50)
     random_state = st.number_input("Random seed", 0, 1000000, 1234, 1)
 
+extra_regulator_text = st.text_area(
+    "Optional expressed TFs / pathway regulators",
+    value="",
+    help=(
+        "Optional gene symbols separated by commas. "
+        "Only genes present in the normalized matrix will be retained."
+    ),
+)
+
+extra_regulators = [
+    gene.strip()
+    for gene in extra_regulator_text.replace("\n", ",").split(",")
+    if gene.strip()
+]
+
 run_genie3 = st.button("Run GENIE3", type="primary")
 if run_genie3:
     try:
@@ -252,6 +271,7 @@ if run_genie3:
             target_gene,
             max_genes=int(max_genes),
             forced_partner=partner_gene,
+            extra_regulators=extra_regulators,
         )
         if network_sample_mode.startswith("Only"):
             network_samples = stratification.low_samples + stratification.high_samples
